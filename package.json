@@ -1,0 +1,20 @@
+{
+  "name": "straycatmap",
+  "version": "1.0.0",
+  "description": "stray cat map repository",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryohei-iijima/straycatmap.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryohei-iijima/straycatmap/issues"
+  },
+  "homepage": "https://github.com/ryohei-iijima/straycatmap#readme"
+}

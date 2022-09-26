@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>のらねこマップ</title>
+    <style>
+        .flex {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        svg {
+            width: 200px;
+        }
+        h1 {
+            font-size: 24px;
+            text-align: center;
+        }
+        label,.link {
+            display: block;
+            width: 320px;
+            height: 40px;
+            background: #384878;
+            color: #ffffff;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+        }
+        .link {
+            text-decoration: none;
+        }
+        .mB10 {
+            margin-bottom: 10px;
+        }
+        input {
+            display: none;
+        }
+        .lead {
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex">
+    <!--?xml version="1.0" encoding="utf-8"?-->
+    <!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+    <svg version="1.1" id="_x36_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 677.723 800" style="enable-background:new 0 0 677.723 800;" xml:space="preserve">
+        <style type="text/css">
+            .st0{fill:#ffcc00;}
+        </style>
+        <g>
+            <path class="st0" d="M390.949,52.556c-13.034,1.641-97.776-4.885-97.776-4.885s-42.354-47.27-57.04-45.629
+                c-14.668,1.634,22.82,78.225,21.185,86.367c-1.617,8.143-14.668,53.771-9.784,88.01c4.901,34.228,16.318,47.237,16.318,53.771
+                c0,6.526-3.266,76.608-9.783,94.509c-6.534,17.934-17.936,140.163-29.353,164.599c-11.384,24.453-34.203,127.129,19.568,169.483
+                c-48.889,13.036-63.727-3.096-112.444,8.151C47.099,686.486-16.44,738.64,6.379,764.708c22.784,26.07,89.625,29.338,123.827,9.785
+                c34.237-19.569,158.066-44.004,185.768-37.487c-14.634,8.133-9.75,24.435,0,30.952c-6.499,14.668,6.535,26.087,17.936,26.087
+                c14.668,9.766,30.969-1.634,30.969-1.634c9.767,4.867,24.435,1.634,30.97,0c6.519-1.634,11.419-13.034,11.419-13.034
+                s16.285,11.4,22.82,9.783c11.383,4.885,27.668,0,32.569-1.634c4.883-1.632,24.453-1.632,29.336-13.034
+                c14.65,3.251,32.604-6.534,32.604-6.534s26.068,6.534,30.953-4.867c4.883-11.436,11.4-16.301,11.4-16.301
+                s76.608-50.556,101.043-123.862c24.453-73.324-13.034-125.497-30.97-161.333c-17.919-35.854-42.37-203.704-101.044-237.941
+                c-29.336-53.747-53.771-99.376-53.771-104.268c0-4.892,13.036-105.927-6.517-112.461c-19.551-6.526-60.306,48.887-60.306,48.887
+                L390.949,52.556z"></path>
+        </g>
+        </svg>
+        <h1>あなたの街の<br>のらねこマップ</h1>
+        <p class="lead">あなたの街にいる<br>猫ちゃんの画像をアップしよう！</p>
+        <a href="" class="link mB10">猫ちゃんマップを見る</a>
+        <form action="">
+            <label for="upload">猫ちゃんの写真を撮る</label>
+            <input id="upload" type="upload" type="file" name="image" accept="image/*" capture="camera">
+        </form>
+    </div>
+</body>
+</html>
