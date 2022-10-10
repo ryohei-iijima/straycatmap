@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/ryohei-iijima/straycatmap/issues"
   },
-  "homepage": "https://github.com/ryohei-iijima/straycatmap#readme"
+  "homepage": "https://github.com/ryohei-iijima/straycatmap#readme",
+  "dependencies": {
+    "@google-cloud/compute": "^3.5.1",
+    "@google-cloud/storage": "^6.5.2",
+    "express": "^4.18.2"
+  }
 }
