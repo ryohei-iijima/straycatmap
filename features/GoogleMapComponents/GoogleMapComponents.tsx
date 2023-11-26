@@ -13,7 +13,7 @@ export const GoogleMapComponents = (props:any) => {
   // map
     const containerStyle = {
       width: '100vw',
-      height: '100vh'
+      height: 'calc(100vh - 49px)'
     };
 
     if (isLoaded && props.catMapInfo) {

@@ -6,6 +6,7 @@ import { createMap } from 'components/page/Index/index';
 import getCatMapInfo from "features/CatMap/api/getCatMapInfo";
 import { Modal } from 'components/ui/Modal/Modal';
 import { ModalAddCat } from 'components/ui/Modal/ModalAddcat';
+import { GrobalNavigation } from 'components/ui/GrobalNavigation/GrobalNavigation';
 type catMapInfoType = 
 {
   title: string,
@@ -51,11 +52,10 @@ function Map() {
 
   return (
     <>
-      <Header addCatMapModalOpen={addCatMapModalOpen}></Header>
       { createMap(catMapInfo, isCurrentPosition, center, modalOpen, setIsCurrentPosition) }
       <Modal selectCatInfo={selectCatInfo} isModal={isModal} modalClose={modalClose}></Modal>
       <ModalAddCat isModal={isAddCatMapModal} modalClose={addCatMapModalClose} setIsAddCatMapModal={setIsAddCatMapModal}></ModalAddCat>
-      <Footer></Footer>
+      <GrobalNavigation/>
     </>
   )
 }

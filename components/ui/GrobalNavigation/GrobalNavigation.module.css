@@ -1,0 +1,36 @@
+.grobal-navigation {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.grobal-navigation .list {
+    display: flex;
+}
+
+.grobal-navigation .list .item {
+    width: 33.333%;
+}
+
+.grobal-navigation .list .item .link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 16px;
+    transition: all ease 0.3s;
+    background: #ffffff;
+}
+
+.grobal-navigation .list .item a:hover {
+    background: #eeeeee;
+}
+
+@media screen and (max-width: 854px) {
+    .grobal-navigation .list .item .link {
+        font-size: 10px;
+    }
+}
