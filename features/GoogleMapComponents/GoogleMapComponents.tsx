@@ -2,6 +2,16 @@ import React from 'react';
 import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useJsApiLoader } from '@react-google-maps/api';
 
+type catMapInfoType = {
+  title: string,
+  describe: string,
+  image: string,
+  center: {
+    lat: number,
+    lng: number
+  }
+}
+
 export const GoogleMapComponents = (props:any) => {
 
   const { isLoaded } = useJsApiLoader({
@@ -23,7 +33,7 @@ export const GoogleMapComponents = (props:any) => {
         zoom={5}
       >
         {
-          props.catMapInfo.map((catMap, index) => {
+          props.catMapInfo.map((catMap:catMapInfoType, index:number) => {
             return <MarkerF
               icon={{
                 url: catMap.image,

@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from 'components/ui/Modal/Modal.module.css';
+import Image from 'next/image';
 
 export const Modal = (props:any) => {
     const modalClass = props.isModal ? `${styles["open"]} ${styles['modal']}` : styles['modal'];
@@ -7,7 +8,10 @@ export const Modal = (props:any) => {
         <div className={modalClass}>
         <div className={styles['modal-overlay']} onClick={props.modalClose}></div>
         <div className={styles['modal-content']}>
-          <img src={props.selectCatInfo.image} alt="" />
+          <Image
+            src={props.selectCatInfo.image}
+            alt=""
+          />
           <h2>{props.selectCatInfo.title}</h2>
           <p>{props.selectCatInfo.describe}</p>
           <button className={styles['modal-close']} onClick={props.modalClose}>× 閉じる</button>

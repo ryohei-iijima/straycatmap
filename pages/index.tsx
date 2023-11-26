@@ -16,10 +16,10 @@ type catMapInfoType =
     lat: number,
     lng: number
   }
-}[]
+}[] | []
 
 function Map() {
-  const [catMapInfo, setCatMapInfo] = useState<catMapInfoType[] | null>(null);
+  const [catMapInfo, setCatMapInfo] = useState<catMapInfoType>([]);
   const [isModal, setIsModal] = useState(false);
   const [isAddCatMapModal, setIsAddCatMapModal] = useState(false);
   const [selectCatInfo, setSelectCatInfo] = useState({});

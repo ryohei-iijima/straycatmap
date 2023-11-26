@@ -5,12 +5,17 @@ import addCatMapInfo from "features/CatMap/api/addCatMapInfo";
 export const ModalAddCat = (props:any) => {
 
   const addCatMap = () => {
+    const title = document.getElementById('title') as HTMLInputElement;
+    const describe = document.getElementById('describe') as HTMLTextAreaElement;
+    const image = document.getElementById('image') as HTMLInputElement;
+    const lat = document.getElementById('lat') as HTMLInputElement;
+    const lng = document.getElementById('lng') as HTMLInputElement;
     const addCatMapInfos = {
-      title: document.getElementById('title')?.value,
-      describe: document.getElementById('describe')?.value,
-      image: document.getElementById('image')?.files[0],
-      lat: document.getElementById('lat')?.value,
-      lng: document.getElementById('lng')?.value,
+      title: title.value,
+      describe: describe.value,
+      image: image.files?.[0],
+      lat: lat.value,
+      lng: lng.value,
     }
     try {
       addCatMapInfo(addCatMapInfos);

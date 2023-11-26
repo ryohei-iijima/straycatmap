@@ -1,23 +1,16 @@
 import React from "react";
 import { GoogleMapComponents } from "features/GoogleMapComponents/GoogleMapComponents";
 
-const modalOpen = (catMap:object, setIsModal, setSelectCatInfo) => {
-    setIsModal(true);
-    setSelectCatInfo(catMap)
-}
-
-const modalClose = (setIsModal) => {
-    setIsModal(false);
-}
-
-const addCatMapModalOpen = (setIsAddCatMapModal) => {
-    setIsAddCatMapModal(true);
-}
-
-const addCatMapModalClose = (setIsAddCatMapModal) => {
-    setIsAddCatMapModal(false);
-}
-
+type catMapInfoType = 
+{
+  title: string,
+  describe: string,
+  image: string,
+  center: {
+    lat: number,
+    lng: number
+  }
+}[] | []
 
 const getCurrentPosition = async () => {
     let currentPosition = {
@@ -32,18 +25,23 @@ const getCurrentPosition = async () => {
         }
     }
 
-    const fetchCurrentPosition = () =>{
-        return new Promise((resolve, rejects) => {
-        navigator.geolocation.getCurrentPosition(resolve,rejects)
-        })
-    } 
-    await fetchCurrentPosition().then(position => {
+    const fetchCurrentPosition = (): Promise<GeolocationPosition> => {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+    };
+    
+    try {
+        const position = await fetchCurrentPosition();
         currentPosition = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        }
-        zoom = 15
-    })
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+        };
+        zoom = 15;
+    } catch (error) {
+        // エラーハンドリングを行う
+        console.error('Error fetching current position:', error);
+    }
 
     return await {
         currentPosition: currentPosition,
@@ -52,7 +50,7 @@ const getCurrentPosition = async () => {
 }
 
 
-export const createMap = (catMapInfo, isCurrentPosition, center, modalOpen, setIsCurrentPosition) => {
+export const createMap = (catMapInfo:catMapInfoType, isCurrentPosition:Boolean, center:object, modalOpen:Function, setIsCurrentPosition: React.Dispatch<React.SetStateAction<boolean>>) => {
     if (catMapInfo?.length === 0) {
         return <div style={{margin: "100px"}}>まだ登録されている猫はいません</div>
     } else {

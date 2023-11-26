@@ -11,6 +11,15 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_ADD_ID
 };
 
+type dataTypes = {
+    title: string,
+    describe: string,
+    image: File | undefined,
+    center: {
+        lat: number,
+        lng: number
+    },
+}
 
 export class Firestore {
     private app: any;
@@ -27,7 +36,7 @@ export class Firestore {
         this.store = getStorage(this.app);
         this.db = getFirestore(this.app)
     }
-    addCatMapData (data) {
+    addCatMapData (data:dataTypes) {
         addDoc(collection(this.db, "catmapinfo"), {
             title: data.title,
             describe: data.describe,
@@ -38,8 +47,8 @@ export class Firestore {
             }
         });
     }
-    addCatImage (file) {
-        const mountainsRef = ref(this.store, file.name);
+    addCatImage (file:File) {
+        const mountainsRef = ref(this.store, file?.name);
         return uploadBytes(mountainsRef, file).then((snapshot) => {
             console.log('Uploaded a blob or file!');
             return mountainsRef.fullPath;

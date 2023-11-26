@@ -4,6 +4,7 @@ import styles from './mypage.module.css'
 import React from 'react'
 import { GrobalNavigation } from 'components/ui/GrobalNavigation/GrobalNavigation'
 import Image from 'next/image'
+import Link from 'next/link'
 
 function Mypage() {
   return (
@@ -20,15 +21,17 @@ function Mypage() {
             </div>
             <p className={styles['user-name']}>User Name</p>
             <p className={styles['email']}>kotarouop@gmail.com</p>
-            <a href='/mypage/edit' className={styles['edit']}>
-                <Image
+            <Link href="/mypage/edit">
+                <a className={styles['edit']}>
+                    <Image
                     src="/images/edit.svg"
                     alt=""
                     width={10}
-                    height={10}                
-                />
-                プロフィールの編集
-            </a>
+                    height={10}
+                    />
+                    プロフィールの編集
+                </a>
+            </Link>
         </div>
         <div className={styles['post-cats']}>
             <div className={styles['inner']}>

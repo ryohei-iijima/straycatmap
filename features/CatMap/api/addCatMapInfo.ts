@@ -1,9 +1,18 @@
 import { Firestore } from "lib/firebase/Firestore";
 
-const addCatMapInfo = async (addCatMapInfo) => {
+type AddCatMapInfos = {
+    title: string;
+    describe: string;
+    image: File | undefined;
+    lat: string;
+    lng: string;
+  };
+
+const addCatMapInfo = async (addCatMapInfo:AddCatMapInfos) => {
     const firestore = new Firestore();
     firestore.init();
 
+    if (!addCatMapInfo.image) return;
     firestore.addCatImage(addCatMapInfo.image).then(data => {
         firestore.storeData(data).then(imagePath => {
             firestore.addCatMapData({
