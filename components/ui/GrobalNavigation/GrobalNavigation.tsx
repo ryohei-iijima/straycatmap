@@ -9,7 +9,7 @@ export const GrobalNavigation = () => {
             <nav className={styles['grobal-navigation']}>
                 <ul className={styles['list']}>
                     <li className={styles['item']}>
-                        <Link href='/mypage'>
+                        <Link href='/mypage' legacyBehavior>
                             <a className={styles['link']}>
                                 <Image 
                                     src="/images/mypage.svg"
@@ -22,7 +22,7 @@ export const GrobalNavigation = () => {
                         </Link>
                     </li>
                     <li className={styles['item']}>
-                        <Link href='/'>
+                        <Link href='/' legacyBehavior>
                             <a className={styles['link']}>
                                 <Image 
                                     src="/images/search.svg"
@@ -35,7 +35,7 @@ export const GrobalNavigation = () => {
                         </Link>
                     </li>
                     <li className={styles['item']}>
-                        <Link href='/add'>
+                        <Link href='/add' legacyBehavior>
                             <a className={styles['link']}>
                                 <Image 
                                     src="/images/add.svg"

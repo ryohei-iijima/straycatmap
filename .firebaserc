@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "straycatmap-368512"
-  }
+    "default": "straycatmap-368512",
+    "production": "straycatmap-368512",
+    "staging": "stg-straycatmap"
+  },
+  "targets": {},
+  "etags": {}
 }

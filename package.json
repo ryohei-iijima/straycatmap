@@ -22,6 +22,7 @@
     "typescript": "4.8.4"
   },
   "devDependencies": {
-    "google-map-react": "^2.2.0"
+    "google-map-react": "^2.2.0",
+    "sass": "^1.69.6"
   }
 }

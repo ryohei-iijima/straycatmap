@@ -21,7 +21,7 @@ function Mypage() {
             </div>
             <p className={styles['user-name']}>User Name</p>
             <p className={styles['email']}>kotarouop@gmail.com</p>
-            <Link href="/mypage/edit">
+            <Link href="/mypage/edit" legacyBehavior>
                 <a className={styles['edit']}>
                     <Image
                     src="/images/edit.svg"
