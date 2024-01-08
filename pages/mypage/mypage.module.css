@@ -10,6 +10,10 @@
     padding: 24px 40px;
 }
 
+.profile.edit-profile input[type="file"] {
+    display: none;
+}
+
 .icon {
     width: 120px;
     height: 120px;
@@ -55,6 +59,15 @@
     margin-right: 4px;
 }
 
+.logout {
+    background: transparent;
+    border: none;
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #4b4b4b;
+    appearance: none;
+    text-decoration: underline;
+}
 
 .post-cats {
     display: flex;
@@ -99,21 +112,45 @@
 
 .profile-edit {
     background-color: #ffffff;
-    padding: 0 24px;
+    padding: 24px;
     font-size: 14px;
 }
 
 .profile-edit .block {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 8px;
-    border-bottom: 1px solid #eeeeee;
-}
-
-.profile-edit .block:last-child {
-    border-bottom: none;
+    margin-bottom: 24px;
 }
 
 .profile-edit .block dt{
     font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.profile-edit .block .note{
+    font-size: 12px;
+    margin-top: 4px
+}
+
+.profile-edit .block input[type="text"],
+.profile-edit .block input[type="email"] {
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 16px;
+    width: 100%;
+    background: url("/images/edit.svg") no-repeat right 16px center / 12px;
+}
+
+.profile-edit .block img{
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.profile-edit button[type="submit"] {
+    width: 100%;
+    appearance: none;
+    border: none;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 14px;
+    background: #2196F3;
+    color: #ffffff;
 }

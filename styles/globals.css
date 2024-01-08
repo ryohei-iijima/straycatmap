@@ -4,8 +4,7 @@ body {
   margin: 0;
   background-color: #f9f9fb;
   color: #4b4b4b;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 游ゴシック体,YuGothic,游ゴシック medium,yu gothic medium,YuGothicM,yu gothic,メイリオ,Meiryo,ヒラギノ角ゴ pro w3,hiragino kaku gothic pro,Osaka,ms pゴシック,ms pgothic,sans-serif;
 }
 
 a {
