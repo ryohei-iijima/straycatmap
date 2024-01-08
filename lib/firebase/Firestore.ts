@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, updatePassword, verifyBeforeUpdateEmail } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, updatePassword, verifyBeforeUpdateEmail, User } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
@@ -87,21 +87,21 @@ export class Firestore {
         };
         return hogehoge();
     }
-    async createUser (email, password, displayName, profileImage) {
+    async createUser (email: string, password: string, displayName: string, profileImage:File | string) {
         if (!displayName) displayName = "ゲスト";
         try {
             const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
             const user = userCredential.user;
             let profileImagePath;
-            if (profileImage) {
+            if (profileImage && profileImage instanceof File) {
                 await this.addProfileImage(profileImage, user);
             }
             await this.updateProfile(user, displayName, profileImagePath);
         } catch (error) {
-            alert(error.message)
+            throw new Error();
         }
     }
-    async addProfileImage (file:File, user) {
+    async addProfileImage (file:File, user: User) {
         try {
             const mountainsRef = await ref(this.store, `profile_images/${user.uid}.${file?.name.split('.').pop()}`);
             await uploadBytes(mountainsRef, file);
@@ -109,20 +109,20 @@ export class Firestore {
                 return url;
             })
         } catch (error) {
-            console.log(error.message)
+            throw new Error();
         }
     }
-    async updateProfile (user, displayName, profileImagePath = null) {
+    async updateProfile (user: User, displayName: string, profileImagePath = null) {
         try {
             await updateProfile(user, {
                 displayName: displayName,
                 photoURL: profileImagePath
             })
         } catch (error) {
-            console.log(error.message)
+            throw new Error();
         }
     }
-    async updateDisplayName (user, newDisplayName) {
+    async updateDisplayName (user: User, newDisplayName: string) {
         try {
             await updateProfile(user, {
                 displayName: newDisplayName,
@@ -131,7 +131,7 @@ export class Firestore {
             console.error('ニックネームの更新に失敗しました:', error);
         }
     }
-    async updateProfileImage (user, newProfileImage) {
+    async updateProfileImage (user: User, newProfileImage:File) {
         try {
             const mountainsRef = await ref(this.store, `profile_images/${user.uid}.${newProfileImage?.name.split('.').pop()}`);
             await uploadBytes(mountainsRef, newProfileImage);
@@ -144,7 +144,7 @@ export class Firestore {
             console.error('プロフィール画像の更新に失敗しました:', error);
         }
     }
-    async updateEmail (user, newEmail) {
+    async updateEmail (user: User, newEmail: string) {
         try {
             await verifyBeforeUpdateEmail(user, newEmail);
         } catch (error) {
@@ -152,7 +152,7 @@ export class Firestore {
             throw error
         }
     }
-    async updatePassword (user, newPassword) {
+    async updatePassword (user: User, newPassword: string) {
         try {
             await updatePassword(user, newPassword)
         } catch (error) {
@@ -167,7 +167,7 @@ export class Firestore {
                 console.log(downloadUrl);
                 return downloadUrl;
             } catch (error) {
-                console.log(error.message);
+                throw new Error();
             }
         }
         return hogehoge();
@@ -194,7 +194,7 @@ export class Firestore {
             console.error("ログアウト中にエラーが発生しました:", error);
           });
     }
-    logIn (email, password) {
+    logIn (email: string, password: string) {
         return signInWithEmailAndPassword(this.auth, email, password);
     }
 }

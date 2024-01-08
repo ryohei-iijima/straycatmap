@@ -8,59 +8,76 @@ import { useEffect, useState } from 'react';
 import { useAuth } from 'features/AuthContext/AuthContext'
 import { useRouter } from 'next/router';
 import { Firestore } from "lib/firebase/Firestore";
+import { User } from 'firebase/auth';
 
 function Mypage() {
-    const { currentUser, loading } = useAuth();
-    const [profileImage, setProfileImage] = useState('/images/mypage.svg');
-    const [updateImage, setUpdateImage] = useState();
-    const [displayName, setDisplayName] = useState();
-    const [email, setEmail] = useState('読み込み中...');
-    const [error, setError] = useState(null);
+    const [currentUser, setCurrentUser] = useState<User | null>();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [profileImage, setProfileImage] = useState<string>('/images/mypage.svg');
+    const [updateImage, setUpdateImage] = useState<File | string>();
+    const [displayName, setDisplayName] = useState<string>('');
+    const [email, setEmail] = useState<string>('読み込み中...');
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
-    const { redirect } = router.query;
     const firestore = new Firestore();
     firestore.init();
+    const authContext = useAuth();
+    useEffect(() => {
+        if (authContext) {
+            const { currentUser, loading } = authContext;
+            setCurrentUser(currentUser);
+            setLoading(loading);
+        }
+    }, [authContext]);
+    
+    useEffect(() => {
+        if (!loading && currentUser) {
+            if (currentUser.email) {
+                setEmail(currentUser.email)
+            } else {
+                setEmail("メールアドレスが設定されておりません。")
+            }
+            if (currentUser.photoURL) setProfileImage(currentUser.photoURL);
+            if (currentUser.displayName) setDisplayName(currentUser.displayName);
+        } else if (!loading && currentUser === null) {
+            router.push('/login?redirect=/mypage/edit');
+        }
+    }, [loading, currentUser, router]);
 
-    const handleProfileImage = async (e) => {
+    const handleProfileImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
+        if (!e.target.files) return;
         const file = e.target.files[0];
         if (file) {
           const reader = new FileReader();
           reader.onload = function(e) {
-            setProfileImage(e.target.result)
+            if (e.target && e.target.result === "string") {
+                setProfileImage(e.target.result);
+            }
             setUpdateImage(file)
-            console.log(e.target.result)
           };
           reader.readAsDataURL(file);
         }
     }
 
-    const handleUpdateProfile = async (e) => {
+    const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            if (!currentUser) return;
             await firestore.updateEmail(currentUser, email);
             await firestore.updateDisplayName(currentUser, displayName);
-            await firestore.updateProfileImage(currentUser, updateImage);
+            if (updateImage instanceof File) {
+                await firestore.updateProfileImage(currentUser, updateImage);
+            }
             alert("正常に保存されました。");
             router.push('/mypage');
         } catch (error) {
-            setError(error.message);
+            if (error instanceof Error) {
+                setError(error.message);
+            }
             console.error("会員情報の更新に失敗しました。:", error);
         }
     }
-
-    useEffect(() => {
-        console.log("currentUserの情報です", currentUser);
-        if (!loading && currentUser) {
-            setEmail(currentUser.email)
-            if (currentUser.photoURL) setProfileImage(currentUser.photoURL);
-            if (currentUser.displayName) setDisplayName(currentUser.displayName);
-        }
-        if (!loading && !currentUser) {
-            // 認証情報がロードされ、かつユーザーがログインしていない場合にリダイレクト
-            router.push('/login?redirect=/mypage');
-        }
-    }, [currentUser, loading]);
 
   return (
     <>

@@ -2,44 +2,64 @@ import React, { useState, useEffect } from 'react';
 import styles from 'components/page/Signup/index.module.scss';
 import { useRouter } from 'next/router';
 import { Firestore } from "lib/firebase/Firestore";
-import { useAuth } from 'features/AuthContext/AuthContext'
-
+import { useAuth } from 'features/AuthContext/AuthContext';
+import { User } from 'firebase/auth';
 
 export const Signup = () => {
-    const { currentUser, loading } = useAuth();
+    const [currentUser, setCurrentUser] = useState<User | null>();
+    const [loading, setLoading] = useState<boolean>(false);
     const [displayName, setDisplayName] = useState('');
-    const [profileImage, setProfileImage] = useState('');
+    const [profileImage, setProfileImage] = useState<File | string>('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const { redirect } = router.query;
     const firestore = new Firestore();
     firestore.init();
+    const authContext = useAuth();
+    useEffect(() => {
+        if (authContext) {
+            const { currentUser, loading } = authContext;
+            setCurrentUser(currentUser);
+            setLoading(loading);
+        }    
+        if (!loading && currentUser) {
+            if (typeof redirect === "string") {
+                router.push(redirect);
+            } else {
+                router.push('/');
+            }
+        }
+    }, [loading, currentUser, router, authContext])
 
-    const handleSignup = async (e) => {
+    const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await firestore.createUser(email, password, displayName, profileImage);
-            await router.push(redirect || '/');
+            await firestore.createUser(email, password, displayName, profileImage).then(() => {
+                if (typeof redirect === "string") {
+                    router.push(redirect);
+                } else {
+                    router.push('/');
+                }
+            });
         } catch (error) {
-            setError(error.message)
-            console.error("新規会員登録に失敗しました。:", error);
+            if (error instanceof Error) {
+                setError(error.message);
+                console.error("新規会員登録に失敗しました。:", error);
+            } else {
+                // それ以外の型のエラーの場合
+                console.error("未知のエラータイプ:", error);
+            }
         }
     }
 
-    const handleProfileImage = async (e) => {
+    const handleProfileImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        console.log(e.target.files[0].name.split('.').pop());
-        setProfileImage(e.target.files[0])
-    }
-
-    useEffect(() => {
-        if (!loading && currentUser) {
-            console.log(currentUser);
-            router.push(redirect || '/');
+        if (e.target.files) {
+            setProfileImage(e.target.files[0])
         }
-    }, [loading, currentUser])
+    }
 
     return (
         <>

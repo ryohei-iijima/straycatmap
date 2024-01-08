@@ -7,6 +7,5 @@ export const Logout = async () => {
         await firestore.logOut();
         await alert("ログアウトしました。")
     } catch (error) {
-        alert(error.message)
     }
 };

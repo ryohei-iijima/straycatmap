@@ -8,26 +8,36 @@ import Link from 'next/link'
 import { Logout } from 'features/Logout/Logout'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from 'features/AuthContext/AuthContext'
+import { useAuth } from 'features/AuthContext/AuthContext';
+import { User } from 'firebase/auth';
 
 function Mypage() {
-    const { currentUser, loading } = useAuth();
+    const [currentUser, setCurrentUser] = useState<User | null>();
+    const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage] = useState('/images/mypage.svg');
-    const [userName, setUserName] = useState();
+    const [userName, setUserName] = useState('読み込み中...');
     const [email, setEmail] = useState('読み込み中...');
     const router = useRouter();
+    const authContext = useAuth();
+
     useEffect(() => {
-        console.log("currentUserの情報です", currentUser);
+        if (authContext) {
+            const { currentUser, loading } = authContext;
+            setCurrentUser(currentUser);
+            setLoading(loading);
+        }
+    }, [authContext]);
+    
+    useEffect(() => {
         if (!loading && currentUser) {
-            setEmail(currentUser.email)
+            console.log("currentUserの情報です", currentUser);
+            if (currentUser.email) setEmail(currentUser.email);
             if (currentUser.photoURL) setProfileImage(currentUser.photoURL);
             if (currentUser.displayName) setUserName(currentUser.displayName);
-        }
-        if (!loading && !currentUser) {
-            // 認証情報がロードされ、かつユーザーがログインしていない場合にリダイレクト
+        } else if (!loading && currentUser === null) {
             router.push('/login?redirect=/mypage');
         }
-    }, [currentUser, loading]);
+    }, [loading, currentUser, router]);
 
 return (
     <>

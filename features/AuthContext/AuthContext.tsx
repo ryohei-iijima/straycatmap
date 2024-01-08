@@ -1,13 +1,22 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Firestore } from "lib/firebase/Firestore";
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
-const AuthContext = createContext(null);
+export type AuthContextType = {
+  currentUser: User | null;
+  loading: boolean;
+}
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
+
+const AuthContext = createContext<AuthContextType | null>(null);
 const firestore = new Firestore();
 
-export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const auth = firestore.Auth;
