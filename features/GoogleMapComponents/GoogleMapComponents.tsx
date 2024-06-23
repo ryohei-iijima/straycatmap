@@ -13,6 +13,17 @@ type Props = {
   index: number;
 }
 
+type catMapInfoType = 
+{
+  title: string,
+  describe: string,
+  image: string,
+  center: {
+    lat: number,
+    lng: number
+  }
+}[] | []
+
 const MapMarker = ({catMap, index}: Props) => {
   return (<MarkerF
     icon={{
@@ -38,7 +49,10 @@ export const GoogleMapComponents: FC = () => {
   };
 
   useEffect(() => {
-    getCatMapInfo(setCatMapInfo);
+    (async () => {
+      const resultData = await getCatMapInfo();
+      setCatMapInfo(resultData);
+    })();
   }, []);
 
   const { isLoaded } = useJsApiLoader({

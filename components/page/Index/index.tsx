@@ -58,6 +58,6 @@ export const createMap = (catMapInfo:catMapInfoType, isCurrentPosition:Boolean, 
             setIsCurrentPosition(true)
         });
       
-        return <GoogleMapComponents catMapInfo={catMapInfo} isCurrentPosition={isCurrentPosition} center={center} modalOpen={modalOpen}></GoogleMapComponents>
+        return <GoogleMapComponents />
     }
 }

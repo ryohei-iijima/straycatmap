@@ -1,21 +1,11 @@
+import { catMapInfos } from "features/Top/types";
 import { Firestore } from "utils/firebase/firebase";
 
-type catMapInfoType = 
-{
-  title: string,
-  describe: string,
-  image: string,
-  center: {
-    lat: number,
-    lng: number
-  }
-}[]
-
-const getCatMapInfo = async (setCatMapInfo: React.Dispatch<React.SetStateAction<catMapInfoType>>) => {
+const getCatMapInfo = async (): Promise<catMapInfos> => {
     const firestore = new Firestore();
     firestore.init();
-    await firestore.Data.then(datas => {
-        setCatMapInfo(datas)
+    return await firestore.Data.then(datas => {
+      return datas as catMapInfos;
     });
 }
 

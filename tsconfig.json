@@ -25,7 +25,9 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["/*"]
+      "@/*": [
+        "/*"
+      ]
     }
   },
   "include": [
@@ -33,8 +35,10 @@
     "**/*.ts",
     "**/*.tsx",
     "pages/index.tsx",
-    ".next/types/**/*.ts"
-, "next.config.js"  ],
+    ".next/types/**/*.ts",
+    "next.config.js",
+    "build/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ],
