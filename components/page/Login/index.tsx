@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import styles from 'components/page/Login/index.module.scss';
-import { useRouter } from 'next/router';
-import { Firestore } from "lib/firebase/Firestore";
+import { useSearchParams } from 'next/navigation';
+import { Firestore } from "utils/firebase/firebase";
 import { useAuth } from 'features/AuthContext/AuthContext';
 import Link from 'next/link';
 import { User } from 'firebase/auth';
@@ -12,8 +14,8 @@ export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
-    const { redirect } = router.query;
+    const router = useSearchParams();
+    const redirect = router.get('redirect');
     const firestore = new Firestore();
     firestore.init();
     const authContext = useAuth();
@@ -28,9 +30,9 @@ export const Login = () => {
     useEffect(() => {
         if (!loading && currentUser) {
             if (typeof redirect === "string") {
-                router.push(redirect);
+                location.href = redirect;
             } else {
-                router.push('/');
+                location.href = '/';
             }
         }
     }, [loading, currentUser, router, redirect]);
@@ -40,9 +42,9 @@ export const Login = () => {
         await firestore.logIn(email, password)
             .then(() => {
                 if (typeof redirect === "string") {
-                    router.push(redirect);
+                    location.href = redirect;
                 } else {
-                    router.push('/');
+                    location.href = '/';
                 }
             })
             .catch((error) => {

@@ -1,16 +1,18 @@
+'use client'
+
 import Header from 'components/base/Header/Header'
 import Footer from 'components/base/Footer/Footer'
-import styles from './mypage.module.css'
+import styles from './edit.module.scss'
 import React from 'react'
 import { GrobalNavigation } from 'components/ui/GrobalNavigation/GrobalNavigation'
 import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import { useAuth } from 'features/AuthContext/AuthContext'
-import { useRouter } from 'next/router';
-import { Firestore } from "lib/firebase/Firestore";
+import { useRouter } from 'next/navigation';
+import { Firestore } from "utils/firebase/firebase";
 import { User } from 'firebase/auth';
 
-function Mypage() {
+const Edit = () => {
     const [currentUser, setCurrentUser] = useState<User | null>();
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage] = useState<string>('/images/mypage.svg');
@@ -138,4 +140,4 @@ function Mypage() {
   )
 }
 
-export default Mypage
+export default Edit;

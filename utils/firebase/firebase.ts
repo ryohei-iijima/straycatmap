@@ -40,6 +40,33 @@ export class Firestore {
         this.db = getFirestore(this.app);
         this.auth = getAuth(this.app);
     }
+    async postCatInfo (user: User, file: File, comment: string) {
+        try {
+            // のらねこ画像の登録処理
+            const mountainsRef = await ref(this.store, `cat_images/${user.uid}/${file.name}`);
+            await uploadBytes(mountainsRef, file);
+            const registCatImagePath =  await getDownloadURL(mountainsRef).then((url) => {
+                console.log('url', url);
+                return url;
+            });
+
+            // 猫の情報をFirestore Detabaseに保存
+            console.log('registCatImagePath', registCatImagePath);
+            await addDoc(collection(this.db, `catmapinfo/${user.uid}/catInfo`), {
+                catMapPath: registCatImagePath,
+                comment: comment,
+            });
+        } catch (error) {
+            console.error('Error posting cat info:', error);
+            if (error instanceof Error) {
+                // エラーがErrorインスタンスの場合、messageプロパティにアクセスできます
+                throw new Error(`Failed to post cat info: ${error.message}`);
+            } else {
+                // それ以外の場合、一般的なエラーメッセージをスローします
+                throw new Error('Failed to post cat info');
+            }
+        }
+    }
     addCatMapData (data:dataTypes) {
         addDoc(collection(this.db, "catmapinfo"), {
             title: data.title,

@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import styles from 'components/page/Signup/index.module.scss';
-import { useRouter } from 'next/router';
-import { Firestore } from "lib/firebase/Firestore";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Firestore } from "utils/firebase/firebase";
 import { useAuth } from 'features/AuthContext/AuthContext';
 import { User } from 'firebase/auth';
 
@@ -13,8 +15,9 @@ export const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
-    const { redirect } = router.query;
+    const router = useRouter()
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get('redirect');
     const firestore = new Firestore();
     firestore.init();
     const authContext = useAuth();

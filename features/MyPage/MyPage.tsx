@@ -1,17 +1,19 @@
+'use client';
+
 import Header from 'components/base/Header/Header'
 import Footer from 'components/base/Footer/Footer'
 import styles from './mypage.module.css'
-import React from 'react'
+import React, { FC } from 'react'
 import { GrobalNavigation } from 'components/ui/GrobalNavigation/GrobalNavigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Logout } from 'features/Logout/Logout'
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useAuth } from 'features/AuthContext/AuthContext';
 import { User } from 'firebase/auth';
 
-function Mypage() {
+const MyPage: FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null>();
     const [loading, setLoading] = useState<boolean>(false);
     const [profileImage, setProfileImage] = useState('/images/mypage.svg');
@@ -39,8 +41,7 @@ function Mypage() {
         }
     }, [loading, currentUser, router]);
 
-return (
-    <>
+    return <>
         <Header></Header>
         <div className={styles['profile']}>
             <div className={styles['icon']}>
@@ -116,7 +117,6 @@ return (
         <GrobalNavigation/>
         <Footer></Footer>
     </>
-  )
-}
+};
 
-export default Mypage
+export default MyPage;

@@ -1,4 +1,4 @@
-import { Firestore } from "lib/firebase/Firestore";
+import { Firestore } from "utils/firebase/firebase";
 const firestore = new Firestore();
 firestore.init();
 
