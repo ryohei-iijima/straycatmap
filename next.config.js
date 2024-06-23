@@ -1,5 +1,5 @@
 module.exports = {
-  distDir: 'build',
+  output: 'export',
   images: {
     remotePatterns: [
       {
@@ -8,5 +8,7 @@ module.exports = {
         port: '',
       },
     ],
+    unoptimized: true,
   },
+  trailingSlash: true,
 }
