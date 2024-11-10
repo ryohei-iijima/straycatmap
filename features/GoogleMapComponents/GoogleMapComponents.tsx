@@ -1,52 +1,59 @@
 'use client';
 
-import React, { FC, useEffect, useState } from 'react';
-import { GoogleMap, MarkerF } from '@react-google-maps/api';
-import { useJsApiLoader } from '@react-google-maps/api';
+import React, { useEffect, useState } from 'react';
 import getCatMapInfo from 'features/CatMap/api/getCatMapInfo';
 import { catMapInfos, catMapInfo } from 'features/Top/types';
-import './GoogleMapComponents.module.scss'
+import styles from './GoogleMapComponents.module.scss';
 
+(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+  key: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
+  v: "weekly",
+});
 
-type Props = {
-  catMap: catMapInfo;
-  index: number;
+const mapMarker = (imageURL: string) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(
+    `<div class='${styles.price}' style='background-image: url(${imageURL});'></div>`,
+    'text/html'
+  );
+  return doc.body.firstChild;
 }
 
-type catMapInfoType = 
-{
-  title: string,
-  describe: string,
-  image: string,
-  center: {
-    lat: number,
-    lng: number
-  }
-}[] | []
-
-const MapMarker = ({catMap, index}: Props) => {
-  return (<MarkerF
-    icon={{
-      url: catMap.image,
-      origin: new window.google.maps.Point(0, 0),
-      anchor: new window.google.maps.Point(15, 15),
-      scaledSize: new window.google.maps.Size(100, 100)
-    }}
-    position={catMap.center}
-    onClick={() => {
-      alert('クリックされました。')
-    }}
-    key={index}
-  />);
-};
-
-
-export const GoogleMapComponents: FC = () => {
-  const [catMapInfo, setCatMapInfo] = useState<catMapInfos>([]);
-  const center = {
+const initMap = async (catMapInfo:catMapInfos): Promise<void> => {
+  const position = {
     lat: 35.75090315915706,
     lng: 139.78810085682267
   };
+  const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+
+  const map = new Map(document.getElementById("map") as HTMLElement, {
+    zoom: 4,
+    center: position,
+    mapId: 'DEMO_MAP_ID',
+    disableDefaultUI: true,
+  });
+
+  // マーカーを生成
+  catMapInfo.map((catMap:catMapInfo) => {
+    const markerElement = new AdvancedMarkerElement(
+      {
+        map: map,
+        position: catMap.center,
+        title: 'Uluru',
+        content: mapMarker(catMap.image), // カスタムHTMLマーカーをセット
+      }
+    );
+
+    markerElement.addListener('click', () => {
+      console.log(catMap);
+      alert(`タイトル：${catMap.title}, 説明文：${catMap.describe}`)
+    })
+  })
+}
+
+export const GoogleMapComponents: React.FC = () => {
+  const [catMapInfo, setCatMapInfo] = useState<catMapInfos>([]);
 
   useEffect(() => {
     (async () => {
@@ -55,32 +62,12 @@ export const GoogleMapComponents: FC = () => {
     })();
   }, []);
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-visualization',
-    googleMapsApiKey: `${process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY}`
-  })
+  if (catMapInfo.length === 0) return null;
 
-  if (!isLoaded || !catMapInfo) {
-    return <div style={{margin: "100px"}}>Loading...</div>
-  }
-  
+  initMap(catMapInfo);
 
-  // map
-  const containerStyle = {
-    width: '100vw',
-    height: 'calc(100vh - 49px)'
-  };
-
-  return <GoogleMap
-    mapContainerStyle={containerStyle}
-    center={center}
-    zoom={5}
-  >
-    {
-      catMapInfo.map((catMap:catMapInfo, index:number) => {
-        return <MapMarker catMap={catMap} index={index} />
-      })
-    }
-  </GoogleMap>
+  return <>
+    <div className={styles.map} id='map'></div>
+  </>
 }
 
