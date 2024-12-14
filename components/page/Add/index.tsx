@@ -89,7 +89,7 @@ export const Add = () => {
                             accept="image/*"
                             onChange={handleCatImage}
                         />
-                        {preview && <img src={preview.toString()} alt="cat preview" />}
+                        {preview && <img className={styles['preview-image']} src={preview.toString()} alt="cat preview" />}
                     </label>
                     <label>
                         <p>タイトル</p>
