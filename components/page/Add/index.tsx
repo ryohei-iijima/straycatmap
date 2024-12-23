@@ -7,6 +7,8 @@ import { Firestore } from "utils/firebase/firebase";
 import { useAuth } from 'features/AuthContext/AuthContext';
 import { User } from 'firebase/auth';
 import Image from 'next/image'
+import { GoogleMapComponents } from 'features/GoogleMapComponents/GoogleMapComponents';
+import { useGoogleMap } from 'features/GoogleMapComponents/GoogleMapContext';
 
 export const Add = () => {
     const [currentUser, setCurrentUser] = useState<User | null>();
@@ -16,10 +18,13 @@ export const Add = () => {
     const [comment, setComment] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+    const [googleMapLat, setGoogleMapLat] = useState<string>('');
+    const [googleMapLng, setGoogleMapLng] = useState<string>('');
     const router = useRouter();
     const firestore = new Firestore();
     firestore.init();
     const authContext = useAuth();
+    const googleMapContext = useGoogleMap();
 
     useEffect(() => {
         if (authContext) {
@@ -38,11 +43,22 @@ export const Add = () => {
     }, [loading, currentUser, router]);
 
 
+    useEffect(() => {
+        if (googleMapContext) {
+            const { lat, lng } = googleMapContext;
+            if (lat !== null && lng !== null) {
+                setGoogleMapLat(lat);
+                setGoogleMapLng(lng);
+            }
+        }
+    }, [googleMapContext]);
+
+
     const handleRegistrationCatInfo = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             if (!currentUser || !catImage) return;
-            await firestore.postCatInfo(currentUser, catImage, comment).then(() => {
+            await firestore.postCatInfo(currentUser, catImage, comment, title, googleMapLat, googleMapLng).then(() => {
                 alert("登録されました。")
                 // router.push('/add/completion');
             });
@@ -102,9 +118,13 @@ export const Add = () => {
                     <label>
                         <p>コメント</p>
                         <textarea
+                            value={comment}
                             onChange={(e) => setComment(e.target.value)}
                         />
                     </label>
+                    <input id="lat" value={googleMapLat} type="hidden" name='lat' readOnly />
+                    <input id="lng" value={googleMapLng} type="hidden" name='lng' readOnly />
+                    <GoogleMapComponents />
                     <button type="submit">登録</button>
                 </form>
                 {error && <p>{error}</p>}

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import getCatMapInfo from 'features/CatMap/api/getCatMapInfo';
 import { catMapInfos, catMapInfo } from 'features/Top/types';
 import styles from './GoogleMapComponents.module.scss';
+import { GoogleMapContextType, useGoogleMap } from './GoogleMapContext';
 
 if (typeof document !== 'undefined') {
   // @ts-ignore
@@ -19,7 +20,11 @@ const mapMarker = (imageURL: string) => {
   return doc.body.firstChild;
 }
 
-const initMap = async (catMapInfo:catMapInfos): Promise<void> => {
+let lat = '';
+let lng = '';
+
+const initMap = async (catMapInfo:catMapInfos, googleMapContext: GoogleMapContextType): Promise<void> => {
+  let longPressTimeout: any;
   const position = {
     lat: 35.75090315915706,
     lng: 139.78810085682267
@@ -50,10 +55,33 @@ const initMap = async (catMapInfo:catMapInfos): Promise<void> => {
       alert(`タイトル：${catMap.title}, 説明文：${catMap.describe}`)
     })
   })
+
+  // 地図上のイベントリスナー
+  map.addListener("mousedown", (event: any) => {
+    // 長押し開始
+    longPressTimeout = setTimeout(() => {
+      // 長押しが成功したら緯度経度を取得
+      lat = event.latLng.lat();
+      lng = event.latLng.lng();
+      googleMapContext.setLat(lat);
+      googleMapContext.setLng(lng);
+    }, 500); // 長押し判定時間（ミリ秒）
+  });
+
+  map.addListener("mouseup", () => {
+    // 長押し終了（タイマーをリセット）
+    clearTimeout(longPressTimeout);
+  });
+
+  map.addListener("mouseout", () => {
+    // 地図外にマウスが出た場合もタイマーをリセット
+    clearTimeout(longPressTimeout);
+  });
 }
 
 export const GoogleMapComponents: React.FC = () => {
   const [catMapInfo, setCatMapInfo] = useState<catMapInfos>([]);
+  const googleMapContext = useGoogleMap();
 
   useEffect(() => {
     (async () => {
@@ -62,11 +90,12 @@ export const GoogleMapComponents: React.FC = () => {
     })();
   }, []);
 
-  if (catMapInfo.length === 0) return null;
-
-  if (typeof document !== 'undefined') {
-    initMap(catMapInfo);
-  }
+  useEffect(() => {
+    if (catMapInfo.length === 0) return;
+    if (typeof document !== 'undefined' && googleMapContext !== null) {
+      initMap(catMapInfo, googleMapContext);
+    }  
+  }, [catMapInfo]);
 
   return <>
     <div className={styles.map} id='map'></div>

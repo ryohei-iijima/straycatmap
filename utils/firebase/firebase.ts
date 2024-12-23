@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, updatePassword, verifyBeforeUpdateEmail, User } from "firebase/auth";
 
@@ -40,7 +40,7 @@ export class Firestore {
         this.db = getFirestore(this.app);
         this.auth = getAuth(this.app);
     }
-    async postCatInfo (user: User, file: File, comment: string) {
+    async postCatInfo (user: User, file: File, comment: string, title: string, lat: string, lng: string) {
         try {
             // のらねこ画像の登録処理
             const mountainsRef = await ref(this.store, `cat_images/${user.uid}/${file.name}`);
@@ -52,9 +52,15 @@ export class Firestore {
 
             // 猫の情報をFirestore Detabaseに保存
             console.log('registCatImagePath', registCatImagePath);
-            await addDoc(collection(this.db, `catmapinfo/${user.uid}/catInfo`), {
+            await addDoc(collection(this.db, 'catmapinfo'), {
                 catMapPath: registCatImagePath,
+                title: title,
                 comment: comment,
+                lat: lat,
+                lng: lng,
+                users_id: user.uid,
+                created_at: serverTimestamp(),
+                updated_at: serverTimestamp(),
             });
         } catch (error) {
             console.error('Error posting cat info:', error);
