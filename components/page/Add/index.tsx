@@ -124,7 +124,7 @@ export const Add = () => {
                     </label>
                     <input id="lat" value={googleMapLat ?? undefined} type="hidden" name='lat' readOnly />
                     <input id="lng" value={googleMapLng ?? undefined} type="hidden" name='lng' readOnly />
-                    <GoogleMapComponents />
+                    <GoogleMapComponents addClass="--add" />
                     <button type="submit">登録</button>
                 </form>
                 {error && <p>{error}</p>}

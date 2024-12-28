@@ -6,6 +6,10 @@ import { catMapInfos, catMapInfo } from 'features/Top/types';
 import styles from './GoogleMapComponents.module.scss';
 import { GoogleMapContextType, useGoogleMap } from './GoogleMapContext';
 
+type GoogleMapComponentsProps = {
+  addClass?: string;
+};
+
 if (typeof document !== 'undefined') {
   // @ts-ignore
   (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({key: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,v: "weekly",});
@@ -82,7 +86,7 @@ const initMap = async (catMapInfo:catMapInfos, googleMapContext: GoogleMapContex
   });
 }
 
-export const GoogleMapComponents: React.FC = () => {
+export const GoogleMapComponents: React.FC<GoogleMapComponentsProps> = (props) => {
   const [catMapInfo, setCatMapInfo] = useState<catMapInfos>([]);
   const googleMapContext = useGoogleMap();
 
@@ -101,7 +105,7 @@ export const GoogleMapComponents: React.FC = () => {
   }, [catMapInfo]);
 
   return <>
-    <div className={styles.map} id='map'></div>
+    <div className={`${styles.map} ${props.addClass ? styles[props.addClass] : ''}`} id='map'></div>
   </>
 }
 
