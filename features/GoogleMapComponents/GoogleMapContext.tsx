@@ -3,10 +3,10 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type GoogleMapContextType = {
-  lat: string | null,
-  lng: string | null,
-  setLat: (lat: string | null) => void,
-  setLng: (lng: string | null) => void,
+  lat: number | null,
+  lng: number | null,
+  setLat: (lat: number | null) => void,
+  setLng: (lng: number | null) => void,
 }
 
 type GoogleMapProviderProps = {
@@ -16,8 +16,8 @@ type GoogleMapProviderProps = {
 const GoogleMapContext = createContext<GoogleMapContextType | null>(null);
 
 export const GoogleMapProvider = ({ children }: GoogleMapProviderProps) => {
-  const [lat, setLat] = useState<string | null>(null);
-  const [lng, setLng] = useState<string | null>(null);
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
 
   return (
     <GoogleMapContext.Provider value={{ lat, lng, setLat, setLng }}>

@@ -18,8 +18,8 @@ export const Add = () => {
     const [comment, setComment] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-    const [googleMapLat, setGoogleMapLat] = useState<string>('');
-    const [googleMapLng, setGoogleMapLng] = useState<string>('');
+    const [googleMapLat, setGoogleMapLat] = useState<number | null>(null);
+    const [googleMapLng, setGoogleMapLng] = useState<number | null>(null);
     const router = useRouter();
     const firestore = new Firestore();
     firestore.init();
@@ -122,8 +122,8 @@ export const Add = () => {
                             onChange={(e) => setComment(e.target.value)}
                         />
                     </label>
-                    <input id="lat" value={googleMapLat} type="hidden" name='lat' readOnly />
-                    <input id="lng" value={googleMapLng} type="hidden" name='lng' readOnly />
+                    <input id="lat" value={googleMapLat ?? undefined} type="hidden" name='lat' readOnly />
+                    <input id="lng" value={googleMapLng ?? undefined} type="hidden" name='lng' readOnly />
                     <GoogleMapComponents />
                     <button type="submit">登録</button>
                 </form>

@@ -20,8 +20,8 @@ const mapMarker = (imageURL: string) => {
   return doc.body.firstChild;
 }
 
-let lat = '';
-let lng = '';
+let lat = null;
+let lng = null;
 
 const initMap = async (catMapInfo:catMapInfos, googleMapContext: GoogleMapContextType): Promise<void> => {
   let longPressTimeout: any;
@@ -31,6 +31,7 @@ const initMap = async (catMapInfo:catMapInfos, googleMapContext: GoogleMapContex
   };
   const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+  const currentCatPosition = new AdvancedMarkerElement;
 
   const map = new Map(document.getElementById("map") as HTMLElement, {
     zoom: 4,
@@ -65,6 +66,8 @@ const initMap = async (catMapInfo:catMapInfos, googleMapContext: GoogleMapContex
       lng = event.latLng.lng();
       googleMapContext.setLat(lat);
       googleMapContext.setLng(lng);
+      currentCatPosition.map = map;
+      currentCatPosition.position = {lat, lng};
     }, 500); // 長押し判定時間（ミリ秒）
   });
 
