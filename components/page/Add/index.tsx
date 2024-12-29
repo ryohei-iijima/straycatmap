@@ -106,8 +106,8 @@ export const Add = () => {
             <div className={styles['wrap']}>
                 <h1 className={styles['page-title']}>のらねこ登録画面</h1>
                 <form className={styles['form']} onSubmit={handleRegistrationCatInfo}>
-                    <label>
-                        <label htmlFor="catImage" className={styles['file']}>
+                    <div className={styles['file']}>
+                        <label className={styles['thumbnail']}>
                             <Image
                                 src="/images/camera.svg"
                                 alt=""
@@ -115,15 +115,15 @@ export const Add = () => {
                                 height={10}
                             />
                             写真を登録
+                            <input
+                                id="catImage"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleCatImage}
+                            />
+                            {preview && <img className={styles['preview-image']} src={preview.toString()} alt="cat preview" />}
                         </label>
-                        <input
-                            id="catImage"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleCatImage}
-                        />
-                        {preview && <img className={styles['preview-image']} src={preview.toString()} alt="cat preview" />}
-                    </label>
+                    </div>
                     <label>
                         <p>タイトル</p>
                         <input
