@@ -7,8 +7,7 @@ import { Firestore } from "utils/firebase/firebase";
 import { useAuth } from 'features/AuthContext/AuthContext';
 import { User } from 'firebase/auth';
 import Image from 'next/image'
-import { GoogleMapComponents } from 'features/GoogleMapComponents/GoogleMapComponents';
-import { useGoogleMap } from 'features/GoogleMapComponents/GoogleMapContext';
+import { GoogleMap } from 'features/GoogleMapComponents/GoogleMap';
 
 export const Add = () => {
     const [currentUser, setCurrentUser] = useState<User | null>();
@@ -18,13 +17,43 @@ export const Add = () => {
     const [comment, setComment] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-    const [googleMapLat, setGoogleMapLat] = useState<number | null>(null);
-    const [googleMapLng, setGoogleMapLng] = useState<number | null>(null);
+    const [googleMapLat, setGoogleMapLat] = useState<number | string>('');
+    const [googleMapLng, setGoogleMapLng] = useState<number | string>('');
     const router = useRouter();
     const firestore = new Firestore();
     firestore.init();
     const authContext = useAuth();
-    const googleMapContext = useGoogleMap();
+
+    const handleCallback = async (map: google.maps.Map) => {
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+        const currentCatPosition = new AdvancedMarkerElement;
+      
+        let longPressTimeout: any;
+
+        // 地図上のイベントリスナー
+        map.addListener("mousedown", (event: { latLng: { lat: () => string | number; lng: () => string | number; }; }) => {
+            // 長押し開始
+            longPressTimeout = setTimeout(() => {
+                const lat = event.latLng.lat() ?? '';
+                const lng = event.latLng.lng() ?? '';
+                setGoogleMapLat(lat);
+                setGoogleMapLng(lng);
+                currentCatPosition.map = map;
+                if (typeof lat === 'string' || typeof lng === 'string') return;
+                currentCatPosition.position = {lat, lng};          
+            }, 500); // 長押し判定時間（ミリ秒）
+        });
+
+        map.addListener("mouseup", () => {
+            // 長押し終了（タイマーをリセット）
+            clearTimeout(longPressTimeout);
+        });
+
+        map.addListener("mouseout", () => {
+            // 地図外にマウスが出た場合もタイマーをリセット
+            clearTimeout(longPressTimeout);
+        });
+    }
 
     useEffect(() => {
         if (authContext) {
@@ -41,18 +70,6 @@ export const Add = () => {
             router.push('/login?redirect=/add');
         }
     }, [loading, currentUser, router]);
-
-
-    useEffect(() => {
-        if (googleMapContext) {
-            const { lat, lng } = googleMapContext;
-            if (lat !== null && lng !== null) {
-                setGoogleMapLat(lat);
-                setGoogleMapLng(lng);
-            }
-        }
-    }, [googleMapContext]);
-
 
     const handleRegistrationCatInfo = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -122,9 +139,9 @@ export const Add = () => {
                             onChange={(e) => setComment(e.target.value)}
                         />
                     </label>
-                    <input id="lat" value={googleMapLat ?? undefined} type="hidden" name='lat' readOnly />
-                    <input id="lng" value={googleMapLng ?? undefined} type="hidden" name='lng' readOnly />
-                    <GoogleMapComponents addClass="--add" />
+                    <input id="lat" value={googleMapLat} type="hidden" name='lat' readOnly />
+                    <input id="lng" value={googleMapLng} type="hidden" name='lng' readOnly />
+                    <GoogleMap addClass="--add" onMapLoad={handleCallback} />
                     <button type="submit">登録</button>
                 </form>
                 {error && <p>{error}</p>}

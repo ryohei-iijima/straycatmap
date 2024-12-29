@@ -40,7 +40,7 @@ export class Firestore {
         this.db = getFirestore(this.app);
         this.auth = getAuth(this.app);
     }
-    async postCatInfo (user: User, file: File, comment: string, title: string, lat: number | null, lng: number | null) {
+    async postCatInfo (user: User, file: File, comment: string, title: string, lat: number | string, lng: number | string) {
         try {
             // のらねこ画像の登録処理
             const mountainsRef = await ref(this.store, `cat_images/${user.uid}/${file.name}`);
