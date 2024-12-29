@@ -108,20 +108,26 @@ export const Add = () => {
                 <form className={styles['form']} onSubmit={handleRegistrationCatInfo}>
                     <div className={styles['file']}>
                         <label className={styles['thumbnail']}>
-                            <Image
-                                src="/images/camera.svg"
-                                alt=""
-                                width={10}
-                                height={10}
-                            />
-                            写真を登録
+                            {
+                                preview ? 
+                                <img className={styles['preview-image']} src={preview.toString()} alt="cat preview" /> :
+                                <>
+                                    <Image
+                                        src="/images/camera.svg"
+                                        alt=""
+                                        width={10}
+                                        height={10}
+                                        style={{ marginRight: '4px' }}
+                                    />
+                                    <span>写真を登録</span>
+                                </>
+                            }
                             <input
                                 id="catImage"
                                 type="file"
                                 accept="image/*"
                                 onChange={handleCatImage}
                             />
-                            {preview && <img className={styles['preview-image']} src={preview.toString()} alt="cat preview" />}
                         </label>
                     </div>
                     <label>
