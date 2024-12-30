@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, where, DocumentData } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, updatePassword, verifyBeforeUpdateEmail, User } from "firebase/auth";
 
@@ -101,6 +101,18 @@ export class Firestore {
             return result;
         }
         return getData();
+    }
+    myCatData (userId: string) {
+        const getMyData = async () => {
+            const result: DocumentData[] = [];
+            const q = query(collection(this.db, "catmapinfo"), where("users_id", "==", userId));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                result.push(doc.data());
+            })
+            return result;
+        }
+        return getMyData();
     }
     get Auth () {
         this.app = initializeApp(firebaseConfig);
