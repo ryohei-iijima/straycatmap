@@ -84,12 +84,14 @@ const MyPage: FC = () => {
                         {
                             postCats.map((postCat, index) => (
                             <li className={styles['item']} key={index}>
-                                <Image
-                                    src={postCat.catMapPath}
-                                    alt={postCat.title}
-                                    fill
-                                    className={styles["image"]}
-                                />
+                                <Link href={{pathname: "/mypage/cat/edit", query: {doc_id: postCat.doc_id}}} legacyBehavior>
+                                    <Image
+                                        src={postCat.catMapPath}
+                                        alt={postCat.title}
+                                        fill
+                                        className={styles["image"]}
+                                    />
+                                </Link>
                             </li>
                             ))
                         }

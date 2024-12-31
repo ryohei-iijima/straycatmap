@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, where, DocumentData } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, where, DocumentData, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, updatePassword, verifyBeforeUpdateEmail, User } from "firebase/auth";
 
@@ -73,6 +73,27 @@ export class Firestore {
             }
         }
     }
+    async updateCatInfo (comment: string, title: string, lat: number | string, lng: number | string, DOC_ID: string) {
+        try {
+            const washingtonRef = doc(this.db, 'catmapinfo', DOC_ID);
+            await updateDoc(washingtonRef, {
+                title: title,
+                comment: comment,
+                lat: lat,
+                lng: lng,
+                created_at: serverTimestamp(),
+            })
+        } catch (error) {
+            console.error('Error posting cat info:', error);
+            if (error instanceof Error) {
+                // エラーがErrorインスタンスの場合、messageプロパティにアクセスできます
+                throw new Error(`Failed to post cat info: ${error.message}`);
+            } else {
+                // それ以外の場合、一般的なエラーメッセージをスローします
+                throw new Error('Failed to post cat info');
+            }
+        }
+    }
     addCatMapData (data:dataTypes) {
         addDoc(collection(this.db, "catmapinfo"), {
             title: data.title,
@@ -108,10 +129,32 @@ export class Firestore {
             const q = query(collection(this.db, "catmapinfo"), where("users_id", "==", userId));
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
-                result.push(doc.data());
+                const hoge = doc.data();
+                hoge.doc_id = doc.id;
+                result.push(hoge);
             })
             return result;
         }
+        return getMyData();
+    }
+    editCatData(doc_id: string) {
+        const getMyData = async () => {
+            try {
+                const docRef = doc(this.db, "catmapinfo", doc_id);
+                const docSnap = await getDoc(docRef);
+    
+                if (docSnap.exists()) {
+                    return docSnap.data(); // ドキュメントのデータを返す
+                } else {
+                    console.log("No such document!");
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error fetching document:", error);
+                return null;
+            }
+        };
+    
         return getMyData();
     }
     get Auth () {
