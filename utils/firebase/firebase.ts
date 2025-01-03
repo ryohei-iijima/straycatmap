@@ -75,10 +75,18 @@ export class Firestore {
             }
         }
     }
-    async updateCatInfo (comment: string, title: string, lat: number | string, lng: number | string, DOC_ID: string) {
+    async updateCatInfo (file: File, comment: string, title: string, lat: number | string, lng: number | string, DOC_ID: string, defaultFileName: string) {
         try {
+            // のらねこ画像の登録処理
+            const mountainsRef = ref(this.store, defaultFileName);
+            uploadBytes(mountainsRef, file).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+            });
+
+
             const washingtonRef = doc(this.db, 'catmapinfo', DOC_ID);
             await updateDoc(washingtonRef, {
+                filePath: defaultFileName,
                 title: title,
                 comment: comment,
                 lat: lat,
@@ -150,7 +158,13 @@ export class Firestore {
                 const docSnap = await getDoc(docRef);
     
                 if (docSnap.exists()) {
-                    return docSnap.data(); // ドキュメントのデータを返す
+                    const result: DocumentData = docSnap.data();
+
+                    const pathReference = ref(this.store, result.filePath);
+                    result.fileName = result.filePath;
+                    result.filePath = await getDownloadURL(pathReference);
+    
+                    return result;
                 } else {
                     console.log("No such document!");
                     return null;

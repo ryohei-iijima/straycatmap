@@ -33,6 +33,7 @@ const Edit = () => {
     const [googleMapLat, setGoogleMapLat] = useState<number | string>('');
     const [googleMapLng, setGoogleMapLng] = useState<number | string>('');
     const [map, setMap] = useState<google.maps.Map | null>(null);
+    const [defaultFileName, setDefaultFileName] = useState<string>('');
     const router = useRouter();
     const searchParams = useSearchParams();
     const DOC_ID = searchParams.get('doc_id');
@@ -104,7 +105,8 @@ const Edit = () => {
                     console.log(data);
                     setTitle(data.title);
                     setComment(data.comment);
-                    setPreview(data.catMapPath);
+                    setPreview(data.filePath);
+                    setDefaultFileName(data.fileName);
                     setGoogleMapLat(data.lat);
                     setGoogleMapLng(data.lng);
                 });
@@ -117,8 +119,8 @@ const Edit = () => {
     const handleupdateCatInfo = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            if (DOC_ID === null) return;
-            await firestore.updateCatInfo(comment, title, googleMapLat, googleMapLng, DOC_ID).then(() => {
+            if (DOC_ID === null || !catImage) return;
+            await firestore.updateCatInfo(catImage, comment, title, googleMapLat, googleMapLng, DOC_ID, defaultFileName).then(() => {
                 alert("編集登録されました。")
                 // router.push('/add/completion');
             });
