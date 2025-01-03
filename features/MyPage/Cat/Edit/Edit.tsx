@@ -146,6 +146,23 @@ const Edit = () => {
         }
     }
 
+    const handleDelete = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        try {
+            if (DOC_ID === null) return;
+            await firestore.deleteCatInfo(DOC_ID, defaultFileName).then(() => {
+                alert("削除されました。")
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+                console.error("のらねこの削除に失敗しました。:", error);
+            } else {
+                console.error("未知のエラータイプ:", error);
+            }
+        }
+    }
+
     return (
         <>
             <Header></Header>
@@ -186,6 +203,7 @@ const Edit = () => {
                     <input id="lng" value={googleMapLng} type="hidden" name='lng' readOnly />
                     <GoogleMap addClass="--add" onMapLoad={handleCallback} />
                     <button type="submit">編集内容を登録</button>
+                    <button className={styles['delete']} type="button" onClick={handleDelete}>投稿内容を削除</button>
                 </form>
                 {error && <p>{error}</p>}
             </div>

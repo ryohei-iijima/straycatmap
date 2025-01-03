@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, where, DocumentData, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, where, DocumentData, doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getStorage, ref, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, updatePassword, verifyBeforeUpdateEmail, User } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
 
@@ -101,6 +101,21 @@ export class Firestore {
             } else {
                 // それ以外の場合、一般的なエラーメッセージをスローします
                 throw new Error('Failed to post cat info');
+            }
+        }
+    }
+    async deleteCatInfo (DOC_ID: string, defaultFileName: string) {
+        try {
+            await deleteDoc(doc(this.db, 'catmapinfo', DOC_ID));
+            await deleteObject(ref(this.store, defaultFileName))
+        } catch (error) {
+            console.error('Error deleting cat info:', error);
+            if (error instanceof Error) {
+                // エラーがErrorインスタンスの場合、messageプロパティにアクセスできます
+                throw new Error(`Failed to delete cat info: ${error.message}`);
+            } else {
+                // それ以外の場合、一般的なエラーメッセージをスローします
+                throw new Error('Failed to delete cat info');
             }
         }
     }
