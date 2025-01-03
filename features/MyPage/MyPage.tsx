@@ -86,7 +86,7 @@ const MyPage: FC = () => {
                             <li className={styles['item']} key={index}>
                                 <Link href={{pathname: "/mypage/cat/edit", query: {doc_id: postCat.doc_id}}} legacyBehavior>
                                     <Image
-                                        src={postCat.catMapPath}
+                                        src={postCat.fileName}
                                         alt={postCat.title}
                                         fill
                                         className={styles["image"]}

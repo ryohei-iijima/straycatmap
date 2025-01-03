@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, where, DocumentData, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, updatePassword, verifyBeforeUpdateEmail, User } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
@@ -43,17 +44,18 @@ export class Firestore {
     async postCatInfo (user: User, file: File, comment: string, title: string, lat: number | string, lng: number | string) {
         try {
             // のらねこ画像の登録処理
-            const mountainsRef = await ref(this.store, `cat_images/${user.uid}/${file.name}`);
-            await uploadBytes(mountainsRef, file);
-            const registCatImagePath =  await getDownloadURL(mountainsRef).then((url) => {
-                console.log('url', url);
-                return url;
+            const timestamp = uuidv4();
+            const fileExtension = file.name.split('.').pop();
+            const newFilePath = `cat_images/${user.uid}/${timestamp}.${fileExtension}`;
+
+            const mountainsRef = ref(this.store, newFilePath);
+            uploadBytes(mountainsRef, file).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
             });
 
             // 猫の情報をFirestore Detabaseに保存
-            console.log('registCatImagePath', registCatImagePath);
             await addDoc(collection(this.db, 'catmapinfo'), {
-                catMapPath: registCatImagePath,
+                filePath: newFilePath,
                 title: title,
                 comment: comment,
                 lat: lat,
@@ -128,11 +130,15 @@ export class Firestore {
             const result: DocumentData[] = [];
             const q = query(collection(this.db, "catmapinfo"), where("users_id", "==", userId));
             const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
+            for(const doc of querySnapshot.docs) {
                 const hoge = doc.data();
                 hoge.doc_id = doc.id;
+
+                const pathReference = ref(this.store, hoge.filePath);
+                hoge.fileName = await getDownloadURL(pathReference);
+
                 result.push(hoge);
-            })
+            }
             return result;
         }
         return getMyData();
