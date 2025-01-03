@@ -91,7 +91,7 @@ export class Firestore {
                 comment: comment,
                 lat: lat,
                 lng: lng,
-                created_at: serverTimestamp(),
+                updated_at: serverTimestamp(),
             })
         } catch (error) {
             console.error('Error posting cat info:', error);
